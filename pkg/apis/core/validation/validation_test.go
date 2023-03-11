@@ -6198,6 +6198,14 @@ func TestValidateEnv(t *testing.T) {
 			}},
 			expectedError: `valueFrom.fieldRef.fieldPath: Unsupported value: "status.phase": supported values: "metadata.name", "metadata.namespace", "metadata.uid", "spec.nodeName", "spec.serviceAccountName", "status.hostIP", "status.podIP", "status.podIPs"`,
 		},
+		{
+			name: "duplicate env key",
+			envs: []core.EnvVar{
+				{Name: "foo"},
+				{Name: "foo"},
+			},
+			expectedError: "[1].name: Duplicate value",
+		},
 	}
 	for _, tc := range errorCases {
 		if errs := ValidateEnv(tc.envs, field.NewPath("field"), PodValidationOptions{}); len(errs) == 0 {
